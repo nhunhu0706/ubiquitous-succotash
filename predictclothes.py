@@ -74,4 +74,3 @@ with tab2:
             n = np.argsort(y[0])[::-1]
             for i in range(3):
                 st.write(labels[n[i]], y[0][n[i]],'%')
-            st.write(y)
