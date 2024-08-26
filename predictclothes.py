@@ -4,15 +4,15 @@ import numpy as np
 from keras.datasets import fashion_mnist
 from keras.models import Sequential
 from keras.layers import Dense, Input, Flatten
-from keras.utils import set_random_seed
+from keras.utils import set_random_seed, to_categorical
 from keras.backend import clear_session
+from keras.models import load_model
 from PIL import Image
 (X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
 
 labels = ['T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 X_train = X_train / 255
 X_test = X_test / 255
-from keras.utils import to_categorical
 st.title('MNIST-Fashion Classification')
 
 tab1,tab2 = st.tabs(['Train', 'Inference'])
@@ -54,10 +54,12 @@ with tab1:
                 ax.plot(history.history['loss'])
                 ax.plot(history.history['accuracy'])
                 ax.legend(['Loss', 'Accuracy'])
+                model.save('model keras')
                 st.pyplot(fig)
 with tab2:
      uploaded_file = st.file_uploader("Upload Image File",type=['png', 'jpg','jpeg'])
      if uploaded_file is not None:
+        model = load_model('model.keras')
         col1,col2=st.columns(2) 
         with col1:
             st.image(uploaded_file)
@@ -66,7 +68,7 @@ with tab2:
             img = img.resize((28, 28))
             img = img.convert('L')
             img = np.array(img)
-            img[:,:] = [255] - img[:,:]
+            img = 255 - img
             img = img.reshape(1, 28, 28)
             img = img / 255
             y = model.predict(img)*100
